@@ -22,7 +22,6 @@ const TodoItem = ({ id, title, completed }: todos) => {
     }
   };
   async function toggleTodo(id: string, completed: boolean) {
-    console.log({ id, completed });
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     try {
       await axios.put(`${apiUrl}/api/todos/${id}`, {

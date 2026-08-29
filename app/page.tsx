@@ -14,7 +14,6 @@ const Home = async () => {
   const apiRequest = await fetch(`${apiUrl}/api/todos`);
   const data: { todos: todos[] } = await apiRequest.json();
   const { todos } = data;
-  console.log("Todos: ", todos);
   const leftTodos = todos.filter((todo) => !todo.completed);
   const completedTodos = todos.filter((todo) => todo.completed);
   return (

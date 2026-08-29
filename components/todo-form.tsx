@@ -25,7 +25,6 @@ const TodoForm = () => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    console.log("API URL", apiUrl);
     try {
       setLoading(true);
       await axios.post(`${apiUrl}/api/todos/new`, {
@@ -35,7 +34,6 @@ const TodoForm = () => {
       router.refresh();
       toast.success("Todo added successfully");
     } catch (error) {
-      console.log(error);
       toast.error("Something went wrong.");
     } finally {
       reset();

@@ -5,55 +5,43 @@ from fastapi import FastAPI, Depends,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Annotated
-from .settings import DATABASE_URL
+from .settings import DATABASE_URL, CORS_ORIGINS
+from .models import Todo
 
-class Todo(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    title: str = Field(index=True)
-    completed: bool = False
+def get_engine():
+    connection_string = str(DATABASE_URL).replace(
+    "postgresql", "postgresql+psycopg2"
+    )
+    return create_engine(connection_string)
 
-connection_string = str(DATABASE_URL).replace(
-"postgresql", "postgresql+psycopg2"
-)
-
-engine = create_engine(connection_string)
-
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-
+engine = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Creating tables..")
-    create_db_and_tables()
+    global engine
+    if engine is None:
+        engine = get_engine()
     yield
 
 
 app = FastAPI(lifespan=lifespan)
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "https://nextjs-fastapi-todo-app-eosin.vercel.app/",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-
 def get_session():
     with Session(engine) as session:
         yield session
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
 
 
 @app.post("/api/todos/new", response_model=Todo)
