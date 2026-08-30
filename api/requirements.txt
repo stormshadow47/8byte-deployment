@@ -8,4 +8,4 @@ python-dotenv
 alembic
 pytest
 pytest-cov
-httpx
+httpx==0.24.1
