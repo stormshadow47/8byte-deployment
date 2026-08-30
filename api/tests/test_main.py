@@ -3,6 +3,11 @@ from fastapi.testclient import TestClient
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Set environment variables for testing
+os.environ['DATABASE_URL'] = 'sqlite:///test.db'
+os.environ['CORS_ORIGINS'] = 'http://localhost:3000'
+
 from index import app
 
 client = TestClient(app)
