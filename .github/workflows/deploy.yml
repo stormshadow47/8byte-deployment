@@ -88,11 +88,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
+          load: true
           tags: todoapp-frontend:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEXT_PUBLIC_API_URL=http://localhost:8000
+            NEXT_PUBLIC_API_URL=${{ vars.STAGING_API_URL || 'http://localhost:8000' }}
 
       - name: Build backend image
         uses: docker/build-push-action@v5
@@ -100,6 +101,7 @@ jobs:
           context: ./api
           file: ./api/Dockerfile
           push: false
+          load: true
           tags: todoapp-backend:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -173,7 +175,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEXT_PUBLIC_API_URL=http://todoapp-staging-alb-xxx.us-east-1.elb.amazonaws.com
+            NEXT_PUBLIC_API_URL=${{ vars.STAGING_API_URL || 'http://localhost:8000' }}
 
       - name: Build and push backend image
         uses: docker/build-push-action@v5
@@ -223,7 +225,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEXT_PUBLIC_API_URL=http://todoapp-production-alb-xxx.us-east-1.elb.amazonaws.com
+            NEXT_PUBLIC_API_URL=${{ vars.PRODUCTION_API_URL || 'http://localhost:8000' }}
 
       - name: Build and push backend image
         uses: docker/build-push-action@v5
