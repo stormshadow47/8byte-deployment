@@ -10,11 +10,9 @@ const TodoItem = ({ id, title, completed }: todos) => {
   const router = useRouter();
 
   const handleDelete = async (id: any) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
     try {
-      await axios.post(`${apiUrl}/api/delete/${id}`, {
-        id,
-      });
+      await axios.delete(`${apiUrl}/api/todos/${id}`);
       router.refresh();
       toast.success("Todo deleted successfully.");
     } catch {
@@ -22,7 +20,7 @@ const TodoItem = ({ id, title, completed }: todos) => {
     }
   };
   async function toggleTodo(id: string, completed: boolean) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
     try {
       await axios.put(`${apiUrl}/api/todos/${id}`, {
         id,

@@ -24,10 +24,10 @@ const TodoForm = () => {
   const router = useRouter();
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
     try {
       setLoading(true);
-      await axios.post(`${apiUrl}/api/todos/new`, {
+      await axios.post(`${apiUrl}/api/todos`, {
         title: data.todo,
         completed: false,
       });

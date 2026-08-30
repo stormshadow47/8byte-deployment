@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Todos from "@/components/todos";
 import { Button } from "@/components/ui/button";
 import logo from "@/public/logo.png";
@@ -6,16 +9,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { todos } from "@/lib/types";
 
-export const revalidate = 0;
+const Home = () => {
+  const [todos, setTodos] = useState<todos[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const Home = async () => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const apiRequest = await fetch(`${apiUrl}/api/todos`);
+        const data: { todos: todos[] } = await apiRequest.json();
+        setTodos(data.todos);
+      } catch (error) {
+        console.error("Failed to fetch todos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const apiRequest = await fetch(`${apiUrl}/api/todos`);
-  const data: { todos: todos[] } = await apiRequest.json();
-  const { todos } = data;
+    fetchTodos();
+  }, []);
+
   const leftTodos = todos.filter((todo) => !todo.completed);
   const completedTodos = todos.filter((todo) => todo.completed);
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
   return (
     <div>
       <div className="mt-3 mb-5 flex items-center justify-center">
