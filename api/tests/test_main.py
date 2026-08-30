@@ -1,28 +1,32 @@
 import pytest
-from fastapi.testclient import TestClient
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Set environment variables for testing
+
 os.environ['DATABASE_URL'] = 'sqlite:///test.db'
 os.environ['CORS_ORIGINS'] = 'http://localhost:3000'
 
 from index import app
 
-client = TestClient(app)
+from fastapi.testclient import TestClient
 
-def test_read_root():
+@pytest.fixture
+def client():
+    with TestClient(app) as test_client:
+        yield test_client
+
+def test_read_root(client):
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "Todo API"}
 
-def test_health_check():
+def test_health_check(client):
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
 
-def test_create_todo():
+def test_create_todo(client):
     response = client.post(
         "/api/todos/",
         json={"title": "Test Todo", "completed": False}
@@ -33,12 +37,12 @@ def test_create_todo():
     assert data["completed"] == False
     assert "id" in data
 
-def test_read_todos():
+def test_read_todos(client):
     response = client.get("/api/todos/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
-def test_read_todo():
+def test_read_todo(client):
     # First create a todo
     create_response = client.post(
         "/api/todos/",
@@ -53,14 +57,15 @@ def test_read_todo():
     assert data["id"] == todo_id
     assert data["title"] == "Test Todo"
 
-def test_update_todo():
-
+def test_update_todo(client):
+    # First create a todo
     create_response = client.post(
         "/api/todos/",
         json={"title": "Test Todo", "completed": False}
     )
     todo_id = create_response.json()["id"]
-
+    
+    # Then update it
     response = client.put(
         f"/api/todos/{todo_id}",
         json={"id": todo_id, "title": "Updated Todo", "completed": True}
@@ -70,14 +75,14 @@ def test_update_todo():
     assert data["title"] == "Updated Todo"
     assert data["completed"] == True
 
-def test_delete_todo():
-
+def test_delete_todo(client):
+    # First create a todo
     create_response = client.post(
         "/api/todos/",
         json={"title": "Test Todo", "completed": False}
     )
     todo_id = create_response.json()["id"]
     
-
+    # Then delete it
     response = client.delete(f"/api/todos/{todo_id}")
     assert response.status_code == 200
