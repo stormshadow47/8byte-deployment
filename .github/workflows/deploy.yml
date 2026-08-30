@@ -167,7 +167,7 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-staging-backend
+          task-definition: todoapp-staging-backend
           service: todoapp-staging-backend-service
           cluster: todoapp-staging-backend-cluster
           wait-for-service-stability: true
@@ -176,7 +176,7 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-staging-frontend
+          task-definition: todoapp-staging-frontend
           service: todoapp-staging-frontend-service
           cluster: todoapp-staging-frontend-cluster
           wait-for-service-stability: true
@@ -197,7 +197,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-production-backend
+          task-definition: todoapp-production-backend
           service: todoapp-production-backend-service
           cluster: todoapp-production-backend-cluster
           wait-for-service-stability: true
@@ -206,7 +206,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-production-frontend
+          task-definition: todoapp-production-frontend
           service: todoapp-production-frontend-service
           cluster: todoapp-production-frontend-cluster
           wait-for-service-stability: true
