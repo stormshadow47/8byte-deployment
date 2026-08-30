@@ -135,6 +135,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-frontend-results.sarif'
+          category: 'trivy-frontend'
 
       - name: Run Trivy on backend image
         uses: aquasecurity/trivy-action@master
@@ -148,6 +149,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-backend-results.sarif'
+          category: 'trivy-backend'
 
       - name: Tag and push frontend image to staging ECR
         if: github.ref == 'refs/heads/staging'
@@ -161,12 +163,22 @@ jobs:
           docker tag todoapp-backend:${{ env.IMAGE_TAG }} ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_BACKEND }}:${{ env.IMAGE_TAG }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_BACKEND }}:${{ env.IMAGE_TAG }}
 
-      - name: Deploy to staging ECS
+      - name: Deploy backend to staging ECS
         if: github.ref == 'refs/heads/staging'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-staging
-          service: todoapp-staging
+          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-staging-backend
+          service: todoapp-staging-backend-service
+          cluster: todoapp-staging-backend-cluster
+          wait-for-service-stability: true
+
+      - name: Deploy frontend to staging ECS
+        if: github.ref == 'refs/heads/staging'
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-staging-frontend
+          service: todoapp-staging-frontend-service
+          cluster: todoapp-staging-frontend-cluster
           wait-for-service-stability: true
 
       - name: Tag and push frontend image to production ECR
@@ -181,12 +193,22 @@ jobs:
           docker tag todoapp-backend:${{ env.IMAGE_TAG }} ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_PRODUCTION_BACKEND }}:${{ env.IMAGE_TAG }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_PRODUCTION_BACKEND }}:${{ env.IMAGE_TAG }}
 
-      - name: Deploy to production ECS
+      - name: Deploy backend to production ECS
         if: github.ref == 'refs/heads/main'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-production
-          service: todoapp-production
+          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-production-backend
+          service: todoapp-production-backend-service
+          cluster: todoapp-production-backend-cluster
+          wait-for-service-stability: true
+
+      - name: Deploy frontend to production ECS
+        if: github.ref == 'refs/heads/main'
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: arn:aws:ecs:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:task-definition/todoapp-production-frontend
+          service: todoapp-production-frontend-service
+          cluster: todoapp-production-frontend-cluster
           wait-for-service-stability: true
 
 
