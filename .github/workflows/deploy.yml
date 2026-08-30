@@ -166,13 +166,13 @@ jobs:
       - name: Deploy backend to staging ECS
         if: github.ref == 'refs/heads/staging'
         run: |
-          aws ecs update-service --cluster todoapp-staging-backend-cluster --service todoapp-staging-backend-service --force-new-deployment
+          aws ecs update-service --cluster todoapp-staging-backend-cluster --service todoapp-staging-backend-service --force-new-deployment --query 'service.serviceName' --output text
           aws ecs wait services-stable --cluster todoapp-staging-backend-cluster --services todoapp-staging-backend-service
 
       - name: Deploy frontend to staging ECS
         if: github.ref == 'refs/heads/staging'
         run: |
-          aws ecs update-service --cluster todoapp-staging-frontend-cluster --service todoapp-staging-frontend-service --force-new-deployment
+          aws ecs update-service --cluster todoapp-staging-frontend-cluster --service todoapp-staging-frontend-service --force-new-deployment --query 'service.serviceName' --output text
           aws ecs wait services-stable --cluster todoapp-staging-frontend-cluster --services todoapp-staging-frontend-service
 
       - name: Tag and push frontend image to production ECR
@@ -190,13 +190,13 @@ jobs:
       - name: Deploy backend to production ECS
         if: github.ref == 'refs/heads/main'
         run: |
-          aws ecs update-service --cluster todoapp-production-backend-cluster --service todoapp-production-backend-service --force-new-deployment
+          aws ecs update-service --cluster todoapp-production-backend-cluster --service todoapp-production-backend-service --force-new-deployment --query 'service.serviceName' --output text
           aws ecs wait services-stable --cluster todoapp-production-backend-cluster --services todoapp-production-backend-service
 
       - name: Deploy frontend to production ECS
         if: github.ref == 'refs/heads/main'
         run: |
-          aws ecs update-service --cluster todoapp-production-frontend-cluster --service todoapp-production-frontend-service --force-new-deployment
+          aws ecs update-service --cluster todoapp-production-frontend-cluster --service todoapp-production-frontend-service --force-new-deployment --query 'service.serviceName' --output text
           aws ecs wait services-stable --cluster todoapp-production-frontend-cluster --services todoapp-production-frontend-service
 
 
