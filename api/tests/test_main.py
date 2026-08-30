@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
+# Set environment variables for testing
 os.environ['DATABASE_URL'] = 'sqlite:///test.db'
 os.environ['CORS_ORIGINS'] = 'http://localhost:3000'
 
@@ -11,22 +11,19 @@ from index import app
 
 from fastapi.testclient import TestClient
 
-@pytest.fixture
-def client():
-    with TestClient(app) as test_client:
-        yield test_client
+client = TestClient(app)
 
-def test_read_root(client):
+def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "Todo API"}
 
-def test_health_check(client):
+def test_health_check():
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
 
-def test_create_todo(client):
+def test_create_todo():
     response = client.post(
         "/api/todos/",
         json={"title": "Test Todo", "completed": False}
@@ -37,12 +34,12 @@ def test_create_todo(client):
     assert data["completed"] == False
     assert "id" in data
 
-def test_read_todos(client):
+def test_read_todos():
     response = client.get("/api/todos/")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
-def test_read_todo(client):
+def test_read_todo():
     # First create a todo
     create_response = client.post(
         "/api/todos/",
@@ -57,7 +54,7 @@ def test_read_todo(client):
     assert data["id"] == todo_id
     assert data["title"] == "Test Todo"
 
-def test_update_todo(client):
+def test_update_todo():
     # First create a todo
     create_response = client.post(
         "/api/todos/",
@@ -75,7 +72,7 @@ def test_update_todo(client):
     assert data["title"] == "Updated Todo"
     assert data["completed"] == True
 
-def test_delete_todo(client):
+def test_delete_todo():
     # First create a todo
     create_response = client.post(
         "/api/todos/",
