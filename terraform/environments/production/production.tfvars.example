@@ -1,0 +1,51 @@
+# Production environment variables
+# Copy this file to production.tfvars and fill in the actual values
+# DO NOT commit production.tfvars to git - it contains sensitive credentials
+# NEVER commit actual passwords, API keys, or secrets to version control
+
+# Project settings
+project = "todoapp"
+environment = "production"
+region = "us-east-1"
+
+# Network settings
+vpc_cidr = "10.0.0.0/16"
+public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
+private_subnet_cidrs = ["10.0.10.0/24", "10.0.11.0/24"]
+availability_zones = ["us-east-1a", "us-east-1b"]
+
+# RDS settings
+db_instance_class = "db.t3.medium"
+db_engine_version = "14.19"
+allocated_storage = 50
+max_allocated_storage = 500
+db_name = "tododb"
+db_username = "todo_user"
+multi_az = true
+backup_retention_period = 30
+instance_count = 2
+deletion_protection = true
+
+# Database credentials
+# RDS will auto-manage credentials via AWS Secrets Manager
+# No need to specify db_username/db_password here
+# The database_url secret will be created manually after RDS provisioning
+
+# Container images (replace with your ECR image URLs)
+backend_container_image = "677767959819.dkr.ecr.us-east-1.amazonaws.com/todoapp-backend:latest"
+frontend_container_image = "677767959819.dkr.ecr.us-east-1.amazonaws.com/todoapp-frontend:latest"
+
+# Application settings
+# Note: api_url and cors_origins are now automatically set from Terraform outputs
+# api_url = "http://${module.alb.alb_dns_name}" (automatically managed)
+# cors_origins = "http://${module.alb.alb_dns_name}" (automatically managed)
+# database_url - create this manually after RDS is provisioned (see deployment guide)
+database_url = "arn:aws:secretsmanager:us-east-1:677767959819:secret:todoapp-production/database-url"
+
+# ALB settings
+# ACM certificate ARN for HTTPS (optional, set to null for HTTP only)
+certificate_arn = null
+health_check_path = "/health"
+
+# Additional secrets (optional)
+secrets = {}

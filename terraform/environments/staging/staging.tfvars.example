@@ -1,0 +1,44 @@
+# Staging Environment Configuration
+
+# Project settings
+project = ""
+environment = "staging"
+region = ""
+
+# Network settings
+vpc_cidr = ""
+public_subnet_cidrs = ["", ""]
+private_subnet_cidrs = ["", ""]
+availability_zones = ["", ""]
+
+# RDS settings
+db_instance_class = "db.t3.medium"
+db_engine_version = "15.10"
+db_name = "tododb"
+db_username = "todo_user"
+backup_retention_period = 7
+instance_count = 1
+deletion_protection = false
+
+# Container images
+backend_container_image = ""
+frontend_container_image = ""
+
+# ECS settings
+backend_cpu = 512
+backend_memory = 1024
+frontend_cpu = 512
+frontend_memory = 1024
+backend_desired_count = 1
+frontend_desired_count = 1
+
+# Ports
+frontend_port = 3000
+backend_port = 8000
+
+
+database_url = ""
+
+
+health_check_path = "/health"
+
