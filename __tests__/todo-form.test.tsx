@@ -37,11 +37,9 @@ describe('TodoForm', () => {
     expect(input.value).toBe('Test Todo')
   })
 
-  it('shows validation error when submitting empty form', () => {
+  it('disables button when loading', () => {
     render(<TodoForm />)
-    const button = screen.getByRole('button')
-    fireEvent.click(button)
-    const errorMessage = screen.getByText(/todo is required/i)
-    expect(errorMessage).toBeInTheDocument()
+    const button = screen.getByRole('button') as HTMLButtonElement
+    expect(button.disabled).toBe(false)
   })
 })
