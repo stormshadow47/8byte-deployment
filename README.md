@@ -356,6 +356,29 @@ aws cloudwatch put-metric-alarm \
 
 ---
 
+## Service runtime screenshots:
+
+
+
+<img width="1917" height="553" alt="Screenshot From 2026-08-31 13-55-48" src="https://github.com/user-attachments/assets/570cf5e8-c51c-4081-b25e-54e635f42f20" />
+
+
+<img width="1912" height="652" alt="Screenshot From 2026-08-31 13-56-30" src="https://github.com/user-attachments/assets/d744d6f4-27a0-4dc4-aebf-45231f59f634" />
+
+
+<img width="1912" height="652" alt="Screenshot From 2026-08-31 13-57-43" src="https://github.com/user-attachments/assets/9e8a4600-4763-4b66-ab7d-0ca956c491cc" />
+
+
+<img width="1676" height="487" alt="Screenshot From 2026-08-31 14-09-17" src="https://github.com/user-attachments/assets/c779fb1a-cf9d-4a80-ab3a-9a9f29a6ad2d" />
+
+
+<img width="1676" height="487" alt="Screenshot From 2026-08-31 14-13-42" src="https://github.com/user-attachments/assets/795fd689-3dad-4985-92aa-7a93377541ca" />
+
+
+<img width="1917" height="482" alt="Screenshot From 2026-08-31 14-58-18" src="https://github.com/user-attachments/assets/faeed489-2922-4ff4-8007-22937697fe52" />
+
+
+
 ## Appendix: Useful Commands
 
 **Terraform**
