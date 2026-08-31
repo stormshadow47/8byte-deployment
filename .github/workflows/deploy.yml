@@ -127,6 +127,13 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: todoapp-frontend:${{ env.IMAGE_TAG }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy on frontend image for SARIF
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: todoapp-frontend:${{ env.IMAGE_TAG }}
           format: 'sarif'
           output: 'trivy-frontend-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -138,6 +145,13 @@ jobs:
           category: 'trivy-frontend'
 
       - name: Run Trivy on backend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: todoapp-backend:${{ env.IMAGE_TAG }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy on backend image for SARIF
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: todoapp-backend:${{ env.IMAGE_TAG }}
