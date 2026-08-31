@@ -7,10 +7,15 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ['DATABASE_URL'] = 'sqlite:///test.db'
 os.environ['CORS_ORIGINS'] = 'http://localhost:3000'
 
-from index import app
-from models import Todo
-
+from index import get_engine
+from models import Todo, SQLModel
 from fastapi.testclient import TestClient
+
+# Initialize database before importing app
+engine = get_engine()
+SQLModel.metadata.create_all(engine)
+
+from index import app
 
 client = TestClient(app)
 
