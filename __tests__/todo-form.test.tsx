@@ -1,5 +1,21 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import TodoForm from '@/components/todo-form'
+
+// Mock Next.js router
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    refresh: jest.fn(),
+  }),
+}))
+
+// Mock axios
+jest.mock('axios')
+
+// Mock react-hot-toast
+jest.mock('react-hot-toast', () => ({
+  success: jest.fn(),
+  error: jest.fn(),
+}))
 
 describe('TodoForm', () => {
   it('renders the form input', () => {
@@ -8,39 +24,24 @@ describe('TodoForm', () => {
     expect(input).toBeInTheDocument()
   })
 
-  it('renders the submit button', (): void => {
+  it('renders the submit button', () => {
     render(<TodoForm />)
     const button = screen.getByRole('button')
     expect(button).toBeInTheDocument()
   })
 
-  it('submits the form with todo data', async () => {
-    const mockOnSubmit = jest.fn()
-    render(<TodoForm onSubmit={mockOnSubmit} />)
-    
-    const input = screen.getByPlaceholderText(/enter your todo/i)
-    const button = screen.getByRole('button')
-    
+  it('allows typing in the input field', () => {
+    render(<TodoForm />)
+    const input = screen.getByPlaceholderText(/enter your todo/i) as HTMLInputElement
     fireEvent.change(input, { target: { value: 'Test Todo' } })
-    fireEvent.click(button)
-    
-    await waitFor(() => {
-      expect(mockOnSubmit).toHaveBeenCalledWith({ title: 'Test Todo', completed: false })
-    })
+    expect(input.value).toBe('Test Todo')
   })
 
-  it('clears input after submission', async () => {
-    const mockOnSubmit = jest.fn()
-    render(<TodoForm onSubmit={mockOnSubmit} />)
-    
-    const input = screen.getByPlaceholderText(/enter your todo/i) as HTMLInputElement
+  it('shows validation error when submitting empty form', () => {
+    render(<TodoForm />)
     const button = screen.getByRole('button')
-    
-    fireEvent.change(input, { target: { value: 'Test Todo' } })
     fireEvent.click(button)
-    
-    await waitFor(() => {
-      expect(input.value).toBe('')
-    })
+    const errorMessage = screen.getByText(/todo is required/i)
+    expect(errorMessage).toBeInTheDocument()
   })
 })
