@@ -1,5 +1,5 @@
 # Stage 1
-FROM python:3.13-slim AS builder
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 
 # Stage 2
-FROM python:3.13-slim AS runner
+FROM python:3.12-slim AS runner
 
 WORKDIR /app
 
@@ -33,8 +33,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN groupadd -r appuser && \
     useradd -r -g appuser appuser
 
-COPY --from=builder /usr/local/lib/python3.13/site-packages \
-    /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/lib/python3.12/site-packages \
+    /usr/local/lib/python3.12/site-packages
 
 COPY --from=builder /usr/local/bin /usr/local/bin
 
