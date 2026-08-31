@@ -7,13 +7,18 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ['DATABASE_URL'] = 'sqlite:///test.db'
 os.environ['CORS_ORIGINS'] = 'http://localhost:3000'
 
-from index import app, engine
-from models import Todo, SQLModel
+from sqlmodel import SQLModel, create_engine, Session, select
+from models import Todo
 from fastapi.testclient import TestClient
-from sqlmodel import Session
+
+# Create engine directly for testing
+connection_string = "sqlite:///test.db"
+engine = create_engine(connection_string)
 
 # Initialize database tables
 SQLModel.metadata.create_all(engine)
+
+from index import app
 
 client = TestClient(app)
 
@@ -39,7 +44,6 @@ def test_read_todos():
         session.commit()
         
         # Read all todos
-        from sqlmodel import select
         todos = session.exec(select(Todo)).all()
         assert len(todos) > 0
 
@@ -73,6 +77,5 @@ def test_delete_todo():
         session.commit()
         
         # Verify it's deleted
-        from sqlmodel import select
         deleted_todo = session.get(Todo, todo_id)
         assert deleted_todo is None
